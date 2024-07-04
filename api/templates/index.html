@@ -1,16 +1,109 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="/static/index.css"/>
+    <link rel="stylesheet" href="/static/reset.css" />
     <link
       rel="stylesheet"
       href="https://libs.cdnjs.net/font-awesome/6.5.1/css/all.css"
     />
-</head>
-<body>
-    
-</body>
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <h2 class="header__title">VR_Shop</h2>
+        <div class="header__search-wrap">
+          <input
+            class="search header__search"
+            type="text"
+            placeholder="Поиск..."
+          />
+          <span class="header__search-wrapper"
+            ><i class="fa-solid fa-magnifying-glass header__search-ico"></i
+          ></span>
+        </div>
+        <div class="header__wrapper-btns">
+          <button class="btn btn--profile">
+            <i class="fa-regular fa-user header__ico"></i>
+          </button>
+          <button class="btn btn--favorite">
+            <i class="fa-regular fa-heart header__ico"></i>
+          </button>
+          <button class="btn btn--cart">
+            <i class="fa-solid fa-cart-shopping header__ico"></i>
+          </button>
+          <span class="header__price">xxxx</span>
+        </div>
+      </header>
+      <main class="main">
+        <div class="photos">
+          <div class="photo__pol-wrapper">
+            <div class="photo__pol photo__pol--left">
+              <img src="static/girl.jpg" alt="" />
+            </div>
+            <div class="photo__pol photo__pol--right">
+              <img src="static/man.jpg" alt="" />
+            </div>
+          </div>
+          <div class="photo__style-wrapper">
+            <div class="photo__style photo__style--left">
+              <img src="static/style(1).jpg" alt="">
+            </div>
+            <div class="photo__style photo__style--center ">
+              <img src="static/style(2).jpg" alt="">
+            </div>
+            <div class="photo__style photo__style--center">
+              <img src="static/style(3).jpg" alt="">
+            </div>
+            <div class="photo__style photo__style--right">
+              <img src="static/style(4).jpg" alt="">
+            </div>
+          </div>
+        </div>
+        <h2 class="chapter-title">Женщины</h2>
+        <h4 class="chapter-text">Рекомендации</h4>
+        <div class="cards">
+          <div class="card">
+            <div class="card__img-wrapper">
+              <img src="static/tovar.webp" alt="" />
+            </div>
+            <span class="card__title">футболка nike</span>
+            <span class="card__price">1111</span>
+          </div>
+        </div>
+        <h2 class="chapter-title">Мужчины</h2>
+        <h4 class="chapter-text">Рекомендации</h4>
+        <div class="cards">
+          <div class="card">
+            <div class="card__img-wrapper">
+              <img src="static/tovar.webp" alt="" />
+            </div>
+            <span class="card__title">футболка nike</span>
+            <span class="card__price">1111</span>
+          </div>
+        </div>
+        <h2 class="chapter-title">Партнёры</h2>
+        <div class="brands">
+          <div class="brand">
+            <img src="static/brand1.png" alt="" />
+          </div>
+          <div class="brand">
+            <img src="static/brand2.png" alt="" />
+          </div>
+          <div class="brand">
+            <img src="static/brand3.png" alt="" />
+          </div>
+          <div class="brand">
+            <img src="static/brand4.png" alt="" />
+          </div>
+          <div class="brand">
+            <img src="static/brand5.png" alt="" />
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
 </html>
