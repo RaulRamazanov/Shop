@@ -1,0 +1,4 @@
+python3 -m venv venv(можно скипнуть )
+Set-ExecutionPolicy RemoteSigned -Scope Process
+source venv/bin/activate
+uvicorn main:app --reload
