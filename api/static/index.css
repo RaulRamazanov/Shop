@@ -165,3 +165,50 @@
     margin-top: 6px;
     font-weight: bolder;
 }
+
+.footer{
+    display: flex;
+    background-color: #2D2D2D;
+    padding: 30px 90px 30px 30px;
+    color: #ffff;
+    justify-content: space-between;
+}
+
+
+.footer__left{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.phone-wrapper{
+    font-size: 19px;
+    font-weight: bold;
+}
+
+.phone-number--border{
+    border-right: 3px solid #FFFFFF ;
+    padding-right: 10px;
+}
+
+.footer__oplata{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.footer__center{
+    margin-right: 30px;
+}
+
+.footer__item{
+    margin:  0 10px;
+    font-size: 20px;
+}
+
+.footer__svg{
+    display: flex;
+    width: 39px;
+    align-items: center;
+}
+    
