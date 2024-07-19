@@ -1,0 +1,1 @@
+URL_DATABASE = 'postgresql://postgres:pass123@localhost:5432/shop'

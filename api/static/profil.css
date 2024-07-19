@@ -1,0 +1,138 @@
+.wrapper{
+    display: flex;
+    flex-direction: column;
+
+}
+
+.header{
+    display: block;
+    display: flex; 
+    justify-content: space-between;
+    align-items: center;
+    background-color: #2D2D2D;
+    height: 127px;
+    padding: 30px 50px;
+    
+}
+
+.header__title{
+    color: #FFFFFF;  
+}
+
+.header__search{
+    position: relative;
+    padding: 0 0 0 20px;
+    width: 800px;
+    height: 45px;
+    background-color: #434343;
+}
+
+.header__search-wrap{
+    display: flex;
+    align-items: center;
+    background-color: #434343;
+    padding-right: 7px;
+}
+
+
+.header__wrapper-btns{
+    display: flex;
+}
+
+.btn--profile{
+    display: flex;
+    align-items: center;
+}
+
+.header__ico{
+    color: #ffff;
+    border-radius: 50%;
+    margin-left: 30px;
+    font-size: 24px;
+}
+
+.header__search-ico{
+    color: #999A95;
+    font-size: 23px;
+}
+
+.header__price{
+    color: #ffff;
+    margin-left: 30px;
+}
+
+.main{
+    display: flex;
+    flex-direction: column;
+    padding: 15px 13px;
+}
+
+.stats{
+    display: flex;
+    justify-content: space-between;
+}
+
+.stat{
+    display: flex;
+    flex-direction: column;
+}
+
+.exit{
+    border-radius: 8px;
+    background-color: red;
+    color: #ffff;
+    padding: 10px;
+    align-self: flex-start;
+    margin: 0 auto;
+    margin-top: 100px;
+}
+
+.footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    background-color: #2D2D2D;
+    padding: 30px 90px 30px 30px;
+    color: #ffff;
+    justify-content: space-between;
+}
+
+
+.footer__left{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.phone-wrapper{
+    font-size: 19px;
+    font-weight: bold;
+}
+
+.phone-number--border{
+    border-right: 3px solid #FFFFFF ;
+    padding-right: 10px;
+}
+
+.footer__oplata{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.footer__center{
+    margin-right: 30px;
+}
+
+.footer__item{
+    margin:  0 10px;
+    font-size: 20px;
+}
+
+.footer__svg{
+    display: flex;
+    width: 39px;
+    align-items: center;
+}

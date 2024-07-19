@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/static/reg.css" />
+    <link rel="stylesheet" href="/static/reset.css" />
+    <link
+      rel="stylesheet"
+      href="https://libs.cdnjs.net/font-awesome/6.5.1/css/all.css"
+    />
+</head>
+<body>
+    <body>
+        <header class="header">
+        <h2 class="header__title">VR_Shop</h2>
+        <div class="header__search-wrap">
+          <input
+            class="search header__search"
+            type="text"
+            placeholder="Поиск..."
+          />
+          <span class="header__search-wrapper"
+            ><i class="fa-solid fa-magnifying-glass header__search-ico"></i
+          ></span>
+        </div>
+        <div class="header__wrapper-btns">
+          <button class="btn btn--profile">
+            <i class="fa-regular fa-user header__ico"></i>
+          </button>
+          <button class="btn btn--favorite">
+            <i class="fa-regular fa-heart header__ico"></i>
+          </button>
+          <button class="btn btn--cart">
+            <i class="fa-solid fa-cart-shopping header__ico"></i>
+          </button>
+          <span class="header__price">xxxx</span>
+        </div>
+      </header>
+    <form id="loginForm" action="/login/" method="post">
+    <div class="form">
+        <div class="title">Вход</div>
+        <div class="input-container ic2">
+            <input id="username" name="username" class="input" type="text" placeholder=" " />
+            <div class="cut"></div>
+            <label for="username" class="placeholder">Username</label>
+        </div>
+        <div class="input-container ic2">
+            <input id="password" name="password" class="input" type="password" placeholder=" " />
+            <div class="cut cut-short"></div>
+            <label for="password" class="placeholder">Пароль</label>
+        </div>
+        <button type="submit" class="submit">Войти</button>
+    </div>
+</form>
+     <footer class="footer">
+        <div class="footer__left">
+          <div class="phone-wrapper">
+            <span class="phone-wrapper__phone-number phone-number--border"
+              >+7 926 123-30-00</span
+            >
+            <span class="phone-wrapper__phone-number">+7 926 123-30-00</span>
+          </div>
+          <span class="footer__adress"
+            >г. Москва, 1-я Тверская-Ямская улица, дом 21</span
+          >
+        </div>
+        <h2 class="footer__center">VR_Shop</h2>
+        <div class="footer__right">
+          <div class="footer__contact">
+            <span class="footer__item"><i class="fa-brands fa-telegram footer__ico"></i></span>
+            <span class="footer__item"><i class="fa-brands fa-vk footer__ico"></i></span>
+            <span class="footer__item"><i class="fa-brands fa-odnoklassniki footer__ico"></i></span>
+            <span class="footer__item"><i class="fa-brands fa-youtube footer__ico"></i></span>
+          </div>
+          <div class="footer__oplata">
+            <div class="footer__svg">
+              <img src="https://static.insales-cdn.com/files/1/1312/14550304/original/mir-logo_1.svg" alt="Иконка платежной системы">
+            </div>
+            <div class="footer__svg">
+              <img src="https://static.insales-cdn.com/files/1/1311/14550303/original/Group.svg" alt="">
+            </div>
+            <div class="footer__svg">
+              <img src="https://static.insales-cdn.com/files/1/1305/14550297/original/Visa.svg" alt="Иконка платежной системы">
+            </div>
+          </div>
+        </div>
+      </footer>
+      <script>
+   document.getElementById('loginForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+
+    const userData = new URLSearchParams();
+    userData.append('grant_type', '');
+    userData.append('username', username);
+    userData.append('password', password);
+    userData.append('scope', '');
+    userData.append('client_id', '');
+    userData.append('client_secret', '');
+
+    const requestOptions = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: userData
+    };
+
+    fetch('/login/', requestOptions)
+        .then(response => response.json())
+        .then(data => {
+            console.log('Успешно отправлено:', data);
+            // Добавьте обработку успеха здесь
+        })
+        .catch(error => {
+            console.error('Ошибка при отправке:', error);
+            // Добавьте обработку ошибки здесь
+        });
+});
+</script>
+</body>
+</html>

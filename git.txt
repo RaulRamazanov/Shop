@@ -1,3 +1,3 @@
 git add .
-git commit -m "Your commit message here"
+git commit -m "откатился назад но установил соеденение с PostgreSQL"
 git push origin main
