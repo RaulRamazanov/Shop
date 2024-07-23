@@ -151,12 +151,11 @@ document.getElementById('registrationForm').addEventListener('submit', function(
     .then(response => response.json())
     .then(data => {
         console.log('Success:', data);
-        // Переход на корневую страницу
-        window.location.href = '/';
+        // Переход на логин
+        window.location.href = '/login/';
     })
     .catch((error) => {
         console.error('Error:', error);
-        // Здесь можно добавить обработку ошибки
     });
 });
 </script>

@@ -39,12 +39,12 @@
         </div>
       </header>
     <form id="loginForm" action="/login/" method="post">
-    <div class="form">
-        <div class="title">Вход</div>
+    <div class="form" style="width: 380px;">
+        <div class="title">Вход/ <a href="/users/">Регистрация</a></div>
         <div class="input-container ic2">
             <input id="username" name="username" class="input" type="text" placeholder=" " />
             <div class="cut"></div>
-            <label for="username" class="placeholder">Username</label>
+            <label for="username" class="placeholder">Email</label>
         </div>
         <div class="input-container ic2">
             <input id="password" name="password" class="input" type="password" placeholder=" " />
@@ -120,8 +120,8 @@
              .then(data => { 
                  console.log('Успешно отправлено:', data); 
                  // Добавьте обработку успеха здесь 
-                 // Переход на корневую страницу при успешном входе 
-                 window.location.href = '/'; 
+                 // Переход на профиль при успешном входе 
+                 window.location.href = '/profil/'; 
              }) 
              .catch(error => { 
                  console.error('Ошибка при отправке:', error.message); 

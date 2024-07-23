@@ -32,7 +32,7 @@
       <h1 class="main__titile">Профиль</h1>
       <div class="stats">
       <div class="stat">
-        <h1 class="stat__title">Имя</h1>
+        <h2 class="stat__title">Имя</h2>
         <span class="stat__value">
             {% if has_token %}
                 {% if user %}
@@ -46,7 +46,7 @@
         </span>
     </div>
     <div class="stat">
-        <h1 class="stat__title">Мейл</h1>
+        <h2 class="stat__title">Email</h2>
         <span class="stat__value">
             {% if has_token %}
                 {% if user %}
@@ -60,7 +60,7 @@
         </span>
     </div>
     <div class="stat">
-        <h1 class="stat__title">Роль</h1>
+        <h2 class="stat__title">Роль</h2>
         <span class="stat__value">
             {% if has_token %}
                 {% if user %}
@@ -73,7 +73,8 @@
             {% endif %}
         </span>
     </div>
-      <button class="exit">Выход</button>
+      </div>    
+  <button class="exit">Выход</button>
     </main>
     <footer class="footer">
       <div class="footer__left">
