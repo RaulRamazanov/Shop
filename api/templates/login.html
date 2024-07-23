@@ -87,6 +87,48 @@
           </div>
         </div>
       </footer>
+      <script> 
+        document.getElementById('loginForm').addEventListener('submit', function(event) { 
+         event.preventDefault(); 
       
+         const username = document.getElementById('username').value; 
+         const password = document.getElementById('password').value; 
+      
+         const userData = new URLSearchParams(); 
+         userData.append('grant_type', ''); 
+         userData.append('username', username); 
+         userData.append('password', password); 
+         userData.append('scope', ''); 
+         userData.append('client_id', ''); 
+         userData.append('client_secret', ''); 
+      
+         const requestOptions = { 
+             method: 'POST', 
+             headers: { 
+                 'Content-Type': 'application/x-www-form-urlencoded' 
+             }, 
+             body: userData 
+         }; 
+      
+         fetch('/login/', requestOptions) 
+             .then(response => { 
+                 if (!response.ok) { 
+                     throw new Error('Неверный логин или пароль'); 
+                 } 
+                 return response.json(); 
+             }) 
+             .then(data => { 
+                 console.log('Успешно отправлено:', data); 
+                 // Добавьте обработку успеха здесь 
+                 // Переход на корневую страницу при успешном входе 
+                 window.location.href = '/'; 
+             }) 
+             .catch(error => { 
+                 console.error('Ошибка при отправке:', error.message); 
+                 // Отобразить сообщение об ошибке 
+                 alert(error.message); 
+             }); 
+     }); 
+     </script> 
 </body>
 </html>
