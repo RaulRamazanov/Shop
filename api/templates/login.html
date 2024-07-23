@@ -87,40 +87,6 @@
           </div>
         </div>
       </footer>
-      <script>
-   document.getElementById('loginForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
-
-    const userData = new URLSearchParams();
-    userData.append('grant_type', '');
-    userData.append('username', username);
-    userData.append('password', password);
-    userData.append('scope', '');
-    userData.append('client_id', '');
-    userData.append('client_secret', '');
-
-    const requestOptions = {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: userData
-    };
-
-    fetch('/login/', requestOptions)
-        .then(response => response.json())
-        .then(data => {
-            console.log('Успешно отправлено:', data);
-            // Добавьте обработку успеха здесь
-        })
-        .catch(error => {
-            console.error('Ошибка при отправке:', error);
-            // Добавьте обработку ошибки здесь
-        });
-});
-</script>
+      
 </body>
 </html>

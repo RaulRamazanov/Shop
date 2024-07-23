@@ -1,6 +1,6 @@
-from fastapi import FastAPI, Depends, HTTPException, Request
+from fastapi import FastAPI, Depends, HTTPException, Request, Cookie, status, Path
 from fastapi.security import OAuth2PasswordRequestForm
-from fastapi.responses import Response, HTMLResponse, RedirectResponse
+from fastapi.responses import Response, HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
@@ -8,7 +8,8 @@ from fastapi.responses import Response
 from database import SessionLocal, engine, Base
 from models import User as DBUser, Item as DBItem, FavoriteItem, CartItem
 from pydantic import BaseModel
-from auth import pwd_context, hash_password, verify_password, create_access_token, get_user_by_email
+from validation import User, UserCreate, Token, Item, ItemCreate, validate_user_create
+from auth import *
 import uuid
 
 # подключение библиотеки
@@ -25,23 +26,6 @@ Base.metadata.create_all(bind=engine)
 
 # Переопределение SQLAlchemy моделей в Pydantic модели
 
-class User(BaseModel):
-    username: str
-    email: str
-
-class UserCreate(User):
-    password: str
-
-class Item(BaseModel):
-    title: str
-    description: str
-    price: int
-    size: str
-    color: str
-    image_url: str
-
-class ItemCreate(Item):
-    pass
 
 # Функция для получения сессии базы данных
 def get_db():
@@ -55,20 +39,22 @@ def get_db():
 # Создание пользователя(регистрация)
 @app.post("/users/", response_model=User)
 def create_user(response: Response, user_create: UserCreate, db: Session = Depends(get_db)):
+    validated_user = validate_user_create(user_create.dict())  # Проводим валидацию данных пользователя
+    if validated_user is None:
+        response.status_code = status.HTTP_422_UNPROCESSABLE_ENTITY
+        return {"detail": "Введены неверные данные пользователя"}
+
     user_id = str(uuid.uuid4())
-    hashed_password = hash_password(user_create.password)  # Используйте bcrypt здесь
-    db_user = DBUser(id=user_id, username=user_create.username, email=user_create.email, password=hashed_password)
+    hashed_password = hash_password(validated_user.password)  # Используем валидированные данные
+    db_user = DBUser(id=user_id, username=validated_user.username, email=validated_user.email, password=hashed_password)
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
-    
-    # Генерация JWT-токена для нового пользователя
+
     access_token = create_access_token({"user_id": user_id})
-    
-    # Установка куки с токеном
     response.set_cookie(key="access_token", value=access_token, httponly=True)
     print(access_token)
-    return {"username": user_create.username, "email": user_create.email}
+    return {"username": validated_user.username, "email": validated_user.email}
 
 
 
@@ -77,26 +63,32 @@ class Token(BaseModel):
     token_type: str = "bearer"
 
 
-def has_token(request: Request) -> bool:
-    access_token = request.cookies.get("access_token")
-    return access_token is not None 
-
-
 @app.post("/login/")
 def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
-    user = get_user_by_email(db, form_data.username)  # Изменено на form_data.email
+    user = get_user_by_email(db, form_data.username)
     if not user or not verify_password(form_data.password, user.password):
         raise HTTPException(status_code=401, detail="Неверный email или пароль")
 
     access_token = create_access_token({"sub": user.id})
+    
+    # Установка куки с токеном доступа и установка флага аутентификации вместе с ответом
+    response = JSONResponse(content={"access_token": access_token, "token_type": "bearer"})
+    response.set_cookie(key="access_token", value=access_token)  # Устанавливаем токен в куку
     print(access_token)
-    return {"access_token": access_token, "token_type": "bearer"}
+    return response
 
 @app.post("/logout/")
-def logout(response: Response):
-    # Удаление куки 'access_token' путем установки времени истечения в прошлое
+def logout(request: Request, response: Response, token: str = Cookie(None)):
+    if token:
+        try:
+            decoded_token = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+            print("Decoded Token:", decoded_token)
+        except jwt.ExpiredSignatureError:
+            # Токен устарел
+            pass
     response.delete_cookie("access_token")
-    return RedirectResponse(url="/")
+    return {"message": "Successfully logged out"}
+
 
 @app.delete("/users/{user_id}/")
 def delete_user(user_id: str, db: Session = Depends(get_db)):
@@ -107,7 +99,9 @@ def delete_user(user_id: str, db: Session = Depends(get_db)):
         return {"message": "User with ID {} has been deleted".format(user_id)}
     raise HTTPException(status_code=404, detail="User not found")
 
-
+def has_token(request: Request) -> bool:
+    access_token = request.cookies.get("access_token")
+    return access_token is not None
 
 
 # Создание товара
@@ -141,7 +135,16 @@ async def reg(request: Request):
 async def login(request: Request):
     return templates.TemplateResponse("login.html", {"request": request})
 
-@app.get("/profil/", response_class=HTMLResponse)
-async def profil(request: Request):
-    return templates.TemplateResponse("profil.html", {"request": request})
 
+
+@app.get("/profil/", response_class=HTMLResponse)
+async def profil(request: Request, access_token: str = Cookie(None), db: Session = Depends(get_db)):
+    has_token = False
+    user = None
+
+    if access_token:
+        has_token = True
+        user_id = get_user_id_from_access_token(access_token)  # Получаем айди пользователя из токена
+        user = db.query(DBUser).filter(DBUser.id == user_id).first()  # Получаем пользователя по айди из токена
+
+    return templates.TemplateResponse("profil.html", {"request": request, "has_token": has_token, "user": user})

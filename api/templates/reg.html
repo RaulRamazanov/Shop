@@ -96,10 +96,49 @@ document.getElementById('registrationForm').addEventListener('submit', function(
     event.preventDefault(); // Предотвращаем стандартное поведение формы
 
     const formData = new FormData(this);
+    const username = formData.get('username');
+    const email = formData.get('email');
+    const password = formData.get('password');
+
+    // Проверка данных на стороне клиента
+    if (username.length < 3) {
+        alert("Username должен быть не короче 3 символов");
+        return;
+    }
+    
+    if (/\d/.test(username)) {
+        alert("Имя не должно содержать цифры");
+        return;
+    }
+
+    if (!/^\S+@\S+\.\S+$/.test(email)) {
+        alert("Неправильный формат Email");
+        return;
+    }
+    if (password.length < 8) {
+        alert("Пароль должен быть не короче 8 символов");
+        return;
+    }
+
+    if (!/^[A-Za-z0-9]+$/.test(password)) {
+        alert("Пароль должен содержать только латинские буквы и цифры");
+        return;
+    }
+
+    if (!/\d/.test(password)) {
+        alert("Пароль должен содержать хотя бы одну цифру");
+        return;
+    }
+
+    if (!/[A-Za-z]/.test(password)) {
+        alert("Пароль должен содержать хотя бы одну букву");
+        return;
+    }
+
     const data = {
-        username: formData.get('username'),
-        email: formData.get('email'),
-        password: formData.get('password')
+        username: username,
+        email: email,
+        password: password
     };
 
     fetch('/users/', {
@@ -112,7 +151,8 @@ document.getElementById('registrationForm').addEventListener('submit', function(
     .then(response => response.json())
     .then(data => {
         console.log('Success:', data);
-        // Здесь можно добавить обработку успешного ответа, например, показать сообщение пользователю
+        // Переход на корневую страницу
+        window.location.href = '/';
     })
     .catch((error) => {
         console.error('Error:', error);
