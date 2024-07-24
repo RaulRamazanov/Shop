@@ -4,37 +4,33 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
+    <style>
+      .highlighted {
+        background-color: yellow;
+      }
+    </style>
     <link rel="stylesheet" href="/static/index.css" />
     <link rel="stylesheet" href="/static/reset.css" />
-    <link
-      rel="stylesheet"
-      href="https://libs.cdnjs.net/font-awesome/6.5.1/css/all.css"
-    />
+    <link rel="stylesheet" href="https://libs.cdnjs.net/font-awesome/6.5.1/css/all.css" />
   </head>
   <body>
     <div class="wrapper">
       <header class="header">
         <a href="/"><h2 class="header__title">VR_Shop</h2></a>
         <div class="header__search-wrap">
-          <input
-            class="search header__search"
-            type="text"
-            placeholder="Поиск..."
-          />
-          <span class="header__search-wrapper"
-            ><i class="fa-solid fa-magnifying-glass header__search-ico"></i
-          ></span>
+          <input class="search header__search" type="text" placeholder="Поиск..." id="searchInput" />
+          <span class="header__search-wrapper"><i class="fa-solid fa-magnifying-glass header__search-ico"></i></span>
         </div>
         <div class="header__wrapper-btns">
- <a href="{% if has_token %}/profil/{% else %}/login/{% endif %}" class="btn btn--profile">
-    <i class="fa-regular fa-user header__ico"></i>
-</a>
-  <button class="btn btn--favorite">
-    <i class="fa-regular fa-heart header__ico"></i>
-  </button>
-  <button class="btn btn--cart">
-    <i class="fa-solid fa-cart-shopping header__ico"></i>
-  </button>
+          <a href="{% if has_token %}/profil/{% else %}/login/{% endif %}" class="btn btn--profile">
+            <i class="fa-regular fa-user header__ico"></i>
+          </a>
+          <button class="btn btn--favorite">
+            <i class="fa-regular fa-heart header__ico"></i>
+          </button>
+          <button class="btn btn--cart">
+            <i class="fa-solid fa-cart-shopping header__ico"></i>
+          </button>
           <span class="header__price">xxxx</span>
         </div>
       </header>
@@ -65,25 +61,29 @@
         </div>
         <h2 class="chapter-title">Женщины</h2>
         <h4 class="chapter-text">Рекомендации</h4>
-        <div class="cards">
-          <div class="card">
-            <div class="card__img-wrapper">
-              <img src="static/tovar.webp" alt="" />
+        <div class="cards" style="display: flex; width: 100%; flex-wrap: wrap">
+          {% for item in items %} {% if item.pol == "W" %}
+          <div class="card" style="margin: 0 9px">
+            <div class="card__img-wrapper" style="overflow: hidden;">
+              <img style="max-width: 259px; max-height: 310px; min-height: 310px;" src="{{ item.image_url }}" alt="" />
             </div>
-            <span class="card__title">футболка nike</span>
-            <span class="card__price">1111</span>
+            <p class="card__title">{{ item.title }} <p style="font-weight: bolder; max-width: 240px;">{{ item.description }}</p><p>{{ item.color }}</p></p>
+            <p class="card__price">{{ item.price }}</p>
           </div>
+          {% endif %} {% endfor %}
         </div>
         <h2 class="chapter-title">Мужчины</h2>
         <h4 class="chapter-text">Рекомендации</h4>
-        <div class="cards">
-          <div class="card">
+        <div class="cards" style="display: flex; width: 100%; flex-wrap: wrap">
+          {% for item in items %} {% if item.pol == "M" %}
+          <div class="card" style="margin: 0 9px">
             <div class="card__img-wrapper">
-              <img src="static/tovar.webp" alt="" />
+              <img class="card__img" src="{{ item.image_url }}" alt="" />
             </div>
-            <span class="card__title">футболка nike</span>
-            <span class="card__price">1111</span>
+            <p class="card__title">{{ item.title }}</p>
+            <p class="card__price">{{ item.price }}</p>
           </div>
+          {% endif %} {% endfor %}
         </div>
         <h2 class="chapter-title">Партнёры</h2>
         <div class="brands">
@@ -107,14 +107,10 @@
       <footer class="footer">
         <div class="footer__left">
           <div class="phone-wrapper">
-            <span class="phone-wrapper__phone-number phone-number--border"
-              >+7 926 123-30-00</span
-            >
+            <span class="phone-wrapper__phone-number phone-number--border">+7 926 123-30-00</span>
             <span class="phone-wrapper__phone-number">+7 926 123-30-00</span>
           </div>
-          <span class="footer__adress"
-            >г. Москва, 1-я Тверская-Ямская улица, дом 21</span
-          >
+          <span class="footer__adress">г. Москва, 1-я Тверская-Ямская улица, дом 21</span>
         </div>
         <h2 class="footer__center">VR_Shop</h2>
         <div class="footer__right">
@@ -126,17 +122,32 @@
           </div>
           <div class="footer__oplata">
             <div class="footer__svg">
-              <img src="https://static.insales-cdn.com/files/1/1312/14550304/original/mir-logo_1.svg" alt="Иконка платежной системы">
+              <img src="https://static.insales-cdn.com/files/1/1312/14550304/original/mir-logo_1.svg" alt="Иконка платежной системы" />
             </div>
             <div class="footer__svg">
-              <img src="https://static.insales-cdn.com/files/1/1311/14550303/original/Group.svg" alt="">
+              <img src="https://static.insales-cdn.com/files/1/1311/14550303/original/Group.svg" alt="" />
             </div>
             <div class="footer__svg">
-              <img src="https://static.insales-cdn.com/files/1/1305/14550297/original/Visa.svg" alt="Иконка платежной системы">
+              <img src="https://static.insales-cdn.com/files/1/1305/14550297/original/Visa.svg" alt="Иконка платежной системы" />
             </div>
           </div>
         </div>
       </footer>
     </div>
+    <script>
+      const searchInput = document.getElementById("searchInput");
+
+      // Обработчик события ввода текста в поле поиска
+      searchInput.addEventListener("input", function () {
+        const searchTerm = searchInput.value.trim().toLowerCase();
+        const paragraphs = document.querySelectorAll("p", "h4");
+
+        paragraphs.forEach((paragraph) => {
+          const text = paragraph.textContent.toLowerCase();
+          const regex = new RegExp(searchTerm, "gi");
+          paragraph.innerHTML = text.replace(regex, (match) => `<span class="highlighted">${match}</span>`);
+        });
+      });
+    </script>
   </body>
 </html>

@@ -41,11 +41,14 @@ def validate_user_create(user_data: dict):
 
 class Item(BaseModel):
     title: str
+    pol: str
+    types: str
     description: str
     price: int
     size: str
     color: str
     image_url: str
+    quantity: int
 
 
 class ItemCreate(Item):

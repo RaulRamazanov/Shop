@@ -23,6 +23,8 @@ class Item(Base):
 
     id = Column(String, primary_key=True, index=True, default=str(uuid.uuid4()))
     title = Column(String, index=True)
+    pol = Column(String, index=True)
+    types = Column(String, index=True)
     description = Column(String, index=True)
     price = Column(Integer)
     size = Column(String)

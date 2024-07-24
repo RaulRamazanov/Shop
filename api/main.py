@@ -9,6 +9,7 @@ from database import SessionLocal, engine, Base
 from models import User as DBUser, Item as DBItem, FavoriteItem, CartItem
 from pydantic import BaseModel
 from validation import User, UserCreate, Token, Item, ItemCreate, validate_user_create
+from typing import Optional
 from auth import *
 import uuid
 
@@ -104,15 +105,28 @@ def has_token(request: Request) -> bool:
     return access_token is not None
 
 
-# Создание товара
+
 @app.post("/items/", response_model=Item)
 def create_item(item_create: ItemCreate, db: Session = Depends(get_db)):
     item_id = str(uuid.uuid4())
-    db_item = DBItem(id=item_id, **item_create.dict(), quantity=0)
+    db_item = DBItem(id=item_id, **item_create.dict())
     db.add(db_item)
     db.commit()
     db.refresh(db_item)
-    return item_create  # Return the Pydantic model here
+    return db_item
+
+
+@app.put("/items/{item_id}", response_model=Item)
+def update_item(item_id: str, item_update: ItemCreate, db: Session = Depends(get_db)):
+    db_item = db.query(DBItem).filter(DBItem.id == item_id).first()
+    if db_item is None:
+        raise HTTPException(status_code=404, detail="Item not found")
+    for field, value in item_update.dict(exclude_unset=True).items():
+        setattr(db_item, field, value)
+    db.add(db_item)
+    db.commit()
+    db.refresh(db_item)
+    return db_item
 
 # Получение всех товаров
 @app.get("/items/", response_model=list[Item])
@@ -120,11 +134,26 @@ def read_items(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
     items = db.query(DBItem).offset(skip).limit(limit).all()
     return items
 
+
+
+
+#удаление товара 
+@app.delete("/items/{item_id}")
+def delete_item(item_id: str, db: Session = Depends(get_db)):
+    db_item = db.query(DBItem).filter(DBItem.id == item_id).first()
+    if not db_item:
+        raise HTTPException(status_code=404, detail="Item not found")
+    db.delete(db_item)
+    db.commit()
+    return {"message": "Item deleted"}
+
+
 #гет запросы для фронтента
 
 @app.get("/", response_class=HTMLResponse)
-async def index(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request, "has_token": has_token(request)})
+async def index(request: Request, skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
+    items = db.query(DBItem).offset(skip).limit(limit).all()
+    return templates.TemplateResponse("index.html", {"request": request, "items": items,  "has_token": has_token(request)})
 
 @app.get("/users/", response_class=HTMLResponse)
 async def reg(request: Request):
