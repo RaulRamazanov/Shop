@@ -148,12 +148,69 @@ def delete_item(item_id: str, db: Session = Depends(get_db)):
     return {"message": "Item deleted"}
 
 
+class CartItemCreate(BaseModel):
+    item_id: str
+    quantity: int 
+
+@app.post("/add-to-cart")
+async def add_to_cart(cart_item: CartItemCreate, request: Request, access_token: str = Cookie(None), db: Session = Depends(get_db)):
+    if not access_token:
+        raise HTTPException(status_code=401, detail="Требуется авторизация")  # проверка наличия токена
+
+    user_id = get_user_id_from_access_token(access_token)  # Получаем айди пользователя из токена
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Неверный токен")
+
+    # Создание экземпляра CartItem и сохранение его в базе данных
+    new_cart_item = CartItem(user_id=user_id, item_id=cart_item.item_id, quantity=cart_item.quantity)
+    db.add(new_cart_item)
+    db.commit()
+    db.refresh(new_cart_item)
+
+    return {"message": "Товар добавлен в корзину", "cart_item_id": new_cart_item.id}
+
 #гет запросы для фронтента
 
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request, skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
     items = db.query(DBItem).offset(skip).limit(limit).all()
     return templates.TemplateResponse("index.html", {"request": request, "items": items,  "has_token": has_token(request)})
+
+@app.get("/cart", response_class=HTMLResponse)
+async def view_cart(request: Request, access_token: str = Cookie(None), db: Session = Depends(get_db)):
+    if not access_token:
+        raise HTTPException(status_code=401, detail="Требуется авторизация")  # проверка наличия токена
+
+    user_id = get_user_id_from_access_token(access_token)  # Получаем айди пользователя из токена
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Неверный токен")
+
+    # Запрос к базе данных для получения товаров в корзине по айди пользователя
+    cart_items = db.query(CartItem).filter_by(user_id=user_id).all()
+
+    # Возвращаем шаблон HTML с информацией о товарах в корзине
+    return templates.TemplateResponse("cart.html", {"request": request, "cart_items": cart_items})
+
+
+@app.delete("/cart/{item_id}")
+async def remove_from_cart(item_id: str, request: Request, access_token: str = Cookie(None), db: Session = Depends(get_db)):
+    if not access_token:
+        raise HTTPException(status_code=401, detail="Требуется авторизация")  # проверка наличия токена
+
+    user_id = get_user_id_from_access_token(access_token)  # Получаем айди пользователя из токена
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Неверный токен")
+
+    # Проверяем, есть ли такой товар в корзине
+    cart_item = db.query(CartItem).filter_by(user_id=user_id, item_id=item_id).first()
+    if not cart_item:
+        raise HTTPException(status_code=404, detail="Товар не найден в корзине")
+
+    # Удаляем товар из корзины
+    db.delete(cart_item)
+    db.commit()
+
+    return {"message": "Товар успешно удален из корзины"}
 
 @app.get("/users/", response_class=HTMLResponse)
 async def reg(request: Request):

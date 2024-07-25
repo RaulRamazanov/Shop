@@ -229,3 +229,65 @@ body {
     width: 39px;
     align-items: center;
 }
+
+
+@media (max-width: 1215px) {
+  .header__search-wrap {
+    display: none; /* или любые другие свойства, чтобы скрыть элемент */
+  }
+
+  .header{
+    justify-content: center;
+  }
+}
+
+
+
+
+@media (max-width: 768px) {
+    .header{
+   justify-content: space-between;
+  }
+
+
+}
+
+@media (max-width: 760px) {
+    .footer__center{
+    display: none;
+  }
+
+
+}
+
+
+@media (max-width: 718px) {
+  .footer {
+    flex-wrap: wrap; 
+    margin-top: 10px;
+    justify-content: center;
+    padding: 10px 0 0 0 ;
+  }
+
+  .main{
+    justify-content: center;
+  }
+
+  .footer__left{
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+}
+
+
+
+@media (max-width: 450px) {
+  
+  .main{
+    justify-content: center;
+  }
+    .footer__left{
+    font-size: 15px ;
+    align-items: center;
+  }
+}

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Корзина</title>
+    
+</head>
+<div id="cart-items">
+  
+</div>
+
+<body>
+    <h1>Корзина</h1>
+  {% if cart_items %}
+      {% for item in cart_items %}
+      <img src="{{ item.item.image_url }}" alt="">
+        <div>
+          <p>{{ item.item.title }}</p>
+          <p>{{ item.item.price }}</p>
+          <p>{{ item.quantity }}</p>
+             <form id="deleteForm-{{ item.item.id }}" action="/cart/{{ item.item.id }}" method="post">
+            <input type="hidden" name="_method" value="delete">
+            <button onclick="deleteItem('{{ item.item.id }}')">Удалить из корзины</button>
+        </form>
+      {% endfor %}
+  {% else %}
+    <p>Ваша корзина пуста.</p>
+  {% endif %}
+<script>
+  // Обработчик события при клике на кнопку "Удалить из корзины"
+  function deleteItem(itemId) {
+    if (confirm('Вы уверены, что хотите удалить этот товар из корзины?')) {
+      fetch(`/cart/${itemId}`, {
+        method: 'DELETE'
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+
+        // Перенаправление на корневую страницу
+        window.location.href = '/';
+      })
+      .catch(error => {
+        console.error('Произошла ошибка:', error);
+      });
+    }
+  }
+
+  // Обновление значения суммы на странице корзины
+  document.addEventListener("DOMContentLoaded", () => {
+    fetch("/cart-total")
+      .then(response => response.json())
+      .then(data => {
+        const headerPrice = document.querySelector(".header__price");
+        headerPrice.innerText = data.total.toFixed(2); // Предполагается, что данные о сумме будут возвращаться в поле "total" объекта JSON
+      })
+      .catch(error => {
+        console.error('Произошла ошибка:', error);
+      });
+  });
+</script>
+   
+</body>
+</html>

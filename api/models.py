@@ -30,7 +30,7 @@ class Item(Base):
     size = Column(String)
     color = Column(String)
     image_url = Column(String)
-    quantity = Column(Integer, default=0)
+    quantity = Column(Integer, default=1)
 
     favorites = relationship("FavoriteItem", back_populates="item")
     cart = relationship("CartItem", back_populates="item")

@@ -4,14 +4,14 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
+    <link rel="stylesheet" href="/static/index.css" />
+    <link rel="stylesheet" href="/static/reset.css" />
+    <link rel="stylesheet" href="https://libs.cdnjs.net/font-awesome/6.5.1/css/all.css" />
     <style>
       .highlighted {
         background-color: yellow;
       }
     </style>
-    <link rel="stylesheet" href="/static/index.css" />
-    <link rel="stylesheet" href="/static/reset.css" />
-    <link rel="stylesheet" href="https://libs.cdnjs.net/font-awesome/6.5.1/css/all.css" />
   </head>
   <body>
     <div class="wrapper">
@@ -25,13 +25,13 @@
           <a href="{% if has_token %}/profil/{% else %}/login/{% endif %}" class="btn btn--profile">
             <i class="fa-regular fa-user header__ico"></i>
           </a>
-          <button class="btn btn--favorite">
-            <i class="fa-regular fa-heart header__ico"></i>
+          <button id="favoriteButton" class="btn btn--favorite">
+            <i class="fa-regular fa-moon header__ico"></i>
           </button>
-          <button class="btn btn--cart">
+          <a href="{% if has_token %}/cart/{% else %}/{% endif %}" class="btn btn--profile">
             <i class="fa-solid fa-cart-shopping header__ico"></i>
-          </button>
-          <span class="header__price">xxxx</span>
+          </a>
+           <span class="header__price"></span> 
         </div>
       </header>
       <main class="main">
@@ -62,15 +62,18 @@
         <h2 class="chapter-title">Женщины</h2>
         <h4 class="chapter-text">Рекомендации</h4>
         <div class="cards" style="display: flex; width: 100%; flex-wrap: wrap">
-          {% for item in items %} {% if item.pol == "W" %}
-          <div class="card" style="margin: 0 9px">
-            <div class="card__img-wrapper" style="overflow: hidden;">
-              <img style="max-width: 259px; max-height: 310px; min-height: 310px;" src="{{ item.image_url }}" alt="" />
-            </div>
-            <p class="card__title">{{ item.title }} <p style="font-weight: bolder; max-width: 240px;">{{ item.description }}</p><p>{{ item.color }}</p></p>
-            <p class="card__price">{{ item.price }}</p>
-          </div>
-          {% endif %} {% endfor %}
+          {% for item in items %}
+  {% if item.pol == "W" %}
+    <div class="card">
+    <div class="card__img-wrapper" style="overflow: hidden">
+      <img class="card__img" src="{{ item.image_url }}" alt="" />
+    </div>
+    <p class="card__title">{{ item.title }}</p>
+    <p class="card__price">{{ item.price }}</p>
+    <button class="add-to-cart-btn" data-item-id="{{ item.id }}">Добавить в корзину</button>
+  </div>
+  {% endif %}
+{% endfor %}
         </div>
         <h2 class="chapter-title">Мужчины</h2>
         <h4 class="chapter-text">Рекомендации</h4>
@@ -148,6 +151,55 @@
           paragraph.innerHTML = text.replace(regex, (match) => `<span class="highlighted">${match}</span>`);
         });
       });
+
+// Получение всех кнопок "Добавить в корзину"
+const addToCartButtons = document.getElementsByClassName("add-to-cart-btn");
+
+// Добавление обработчика события при клике на каждую кнопку
+Array.from(addToCartButtons).forEach(button => {
+  button.addEventListener("click", async () => {
+    const itemId = button.dataset.itemId;
+    const itemPriceElement = button.parentElement.querySelector(".card__price");
+    const itemPriceText = itemPriceElement.textContent; // Получаем текстовое содержимое элемента
+
+    // Проверяем, содержит ли текст цифры
+    if (/\d/.test(itemPriceText)) {
+      // Обработка текста, чтобы получить числовое значение цены
+      const itemPrice = parseFloat(itemPriceText.replace(/[^\d.,]/g, '')); 
+
+      try {
+        const response = await fetch("/add-to-cart", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            item_id: itemId,
+            quantity: 1,
+            price: itemPrice // Передача цены товара как части POST-запроса
+          })
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log(data.message);
+
+          // Обновление значения суммы на странице
+          const headerPrice = document.querySelector(".header__price");
+          const currentPrice = parseFloat(headerPrice.innerText);
+          const newPrice = (currentPrice + itemPrice).toFixed(2);
+          headerPrice.innerText = newPrice;
+        } else {
+          throw new Error("Ошибка при добавлении товара в корзину");
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    } else {
+      console.log("Цена не найдена или не является числом");
+    }
+  });
+});
     </script>
   </body>
 </html>
