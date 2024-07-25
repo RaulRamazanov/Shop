@@ -200,6 +200,26 @@ Array.from(addToCartButtons).forEach(button => {
     }
   });
 });
+
+document.addEventListener("DOMContentLoaded", function() { 
+  var favoriteButton = document.getElementById('favoriteButton'); 
+  favoriteButton.addEventListener("click", function(event) { 
+    var bodyElement = document.querySelector('body'); 
+    var headerElement = document.querySelector('header'); 
+    var footerElement = document.querySelector('footer'); 
+     
+    if (bodyElement.classList.contains('dark-mode')) { 
+      bodyElement.classList.remove('dark-mode'); 
+      headerElement.classList.remove('dark-mode'); 
+      footerElement.classList.remove('dark-mode'); 
+    } else { 
+      bodyElement.classList.add('dark-mode'); 
+      headerElement.classList.add('dark-mode'); 
+      footerElement.classList.add('dark-mode'); 
+    } 
+  }); 
+});
+
     </script>
   </body>
 </html>

@@ -28,8 +28,8 @@
           <button class="btn btn--profile">
             <i class="fa-regular fa-user header__ico"></i>
           </button>
-          <button class="btn btn--favorite">
-            <i class="fa-regular fa-heart header__ico"></i>
+          <button id="favoriteButton" class="btn btn--favorite">
+            <i class="fa-regular fa-moon header__ico"></i>
           </button>
           <button class="btn btn--cart">
             <i class="fa-solid fa-cart-shopping header__ico"></i>
@@ -158,6 +158,28 @@ document.getElementById('registrationForm').addEventListener('submit', function(
         console.error('Error:', error);
     });
 });
+
+
+document.addEventListener("DOMContentLoaded", function() { 
+  var favoriteButton = document.getElementById('favoriteButton'); 
+  favoriteButton.addEventListener("click", function(event) { 
+    var bodyElement = document.querySelector('body'); 
+    var headerElement = document.querySelector('header'); 
+    var footerElement = document.querySelector('footer'); 
+     
+    if (bodyElement.classList.contains('dark-mode')) { 
+      bodyElement.classList.remove('dark-mode'); 
+      headerElement.classList.remove('dark-mode'); 
+      footerElement.classList.remove('dark-mode'); 
+    } else { 
+      bodyElement.classList.add('dark-mode'); 
+      headerElement.classList.add('dark-mode'); 
+      footerElement.classList.add('dark-mode'); 
+    } 
+  }); 
+});
+
+
 </script>
   </body>
 </html>
