@@ -3,22 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<<<<<<< HEAD
     <title>Корзина</title> 
     <link rel="stylesheet" href="/static/cart.css" />
     <link rel="stylesheet" href="/static/reset.css" />
     <link rel="stylesheet" href="https://libs.cdnjs.net/font-awesome/6.5.1/css/all.css" />
-=======
-    <title>Корзина</title>
->>>>>>> a9085bac46706776a2bbd220c886c995a28c68f4
-    
+
 </head>
 <div id="cart-items">
   
 </div>
 
 <body>
-<<<<<<< HEAD
   <header class="header">
     <a href="/"><h2 class="header__title">VR_Shop</h2></a>
     <div class="header__search-wrap">
@@ -39,20 +34,11 @@
     </div>
   </header>
    <main>
-  <h1>Корзина</h1>
-  <div class="card">
-
   </div>
-  {% if cart_items %}
-      {% for item in cart_items %}
-      <img src="{{ item.item.image_url }}" alt="">
-=======
     <h1>Корзина</h1>
   {% if cart_items %}
       {% for item in cart_items %}
       <img src="{{ item.item.image_url }}" alt="">
-        <div>
->>>>>>> a9085bac46706776a2bbd220c886c995a28c68f4
           <p>{{ item.item.title }}</p>
           <p>{{ item.item.price }}</p>
           <p>{{ item.quantity }}</p>
@@ -95,9 +81,6 @@
       </div>
     </div>
   </footer>
-
-=======
->>>>>>> a9085bac46706776a2bbd220c886c995a28c68f4
 <script>
   // Обработчик события при клике на кнопку "Удалить из корзины"
   function deleteItem(itemId) {
