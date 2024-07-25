@@ -147,6 +147,34 @@
 }
 
 
+  .dark-mode { 
+    background-color: #000; 
+    color: #fff; 
+  } 
+  
+  .dark-mode header{
+    display: flex; 
+    justify-content: space-between;
+    align-items: center;
+    background-color: #2D2D2D;
+    height: 127px;
+    padding: 30px 50px;
+  } 
+  
+  .dark-mode footer { 
+      display: flex;
+      background-color: #2D2D2D;
+      padding: 30px 90px 30px 30px;
+      color: #ffff;
+      justify-content: space-between;
+    }
+    
+   
+  
+  .dark-mode header * { 
+  color: #ffffff }
+
+
 @media (max-width: 1215px) {
   .header__search-wrap {
     display: none; /* или любые другие свойства, чтобы скрыть элемент */
