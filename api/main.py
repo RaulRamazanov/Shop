@@ -232,7 +232,7 @@ async def add_to_cart(cart_item: CartItemCreate, request: Request, access_token:
 #гет запросы для фронтента
 
 @app.get("/", response_class=HTMLResponse, tags=['client'])
-async def index(request: Request, skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
+async def index(request: Request, skip: int = 0, limit: int = 40, db: Session = Depends(get_db)):
     items = db.query(DBItem).offset(skip).limit(limit).all()
     return templates.TemplateResponse("index.html", {"request": request, "items": items,  "has_token": has_token(request)})
 

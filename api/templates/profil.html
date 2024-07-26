@@ -133,23 +133,36 @@
       document.querySelector(".exit").addEventListener("click", logout);
 
       
-document.addEventListener("DOMContentLoaded", function() { 
-  var favoriteButton = document.getElementById('favoriteButton'); 
-  favoriteButton.addEventListener("click", function(event) { 
-    var bodyElement = document.querySelector('body'); 
-    var headerElement = document.querySelector('header'); 
-    var footerElement = document.querySelector('footer'); 
-     
-    if (bodyElement.classList.contains('dark-mode')) { 
-      bodyElement.classList.remove('dark-mode'); 
-      headerElement.classList.remove('dark-mode'); 
-      footerElement.classList.remove('dark-mode'); 
-    } else { 
-      bodyElement.classList.add('dark-mode'); 
-      headerElement.classList.add('dark-mode'); 
-      footerElement.classList.add('dark-mode'); 
-    } 
-  }); 
+document.addEventListener("DOMContentLoaded", function () {
+  var bodyElement = document.querySelector("body");
+  var headerElement = document.querySelector("header");
+  var footerElement = document.querySelector("footer");
+
+  // Проверяем состояние темной темы из локального хранилища
+  var isDarkModeEnabled = localStorage.getItem("darkModeEnabled") === "true";
+
+  // Устанавливаем класс dark-mode для элементов, если она была включена
+  if (isDarkModeEnabled) {
+    bodyElement.classList.add("dark-mode");
+    headerElement.classList.add("dark-mode");
+    footerElement.classList.add("dark-mode");
+  }
+
+   // Добавляем обработчик события для кнопки переключения темной/светлой темы
+   var favoriteButton = document.getElementById('favoriteButton');
+   favoriteButton.addEventListener('click', function() {
+     if (bodyElement.classList.contains('dark-mode')) {
+       bodyElement.classList.remove('dark-mode');
+       headerElement.classList.remove('dark-mode');
+       footerElement.classList.remove('dark-mode');
+       localStorage.setItem('darkModeEnabled', 'false'); // Сохраняем состояние в локальное хранилищe
+     } else {
+       bodyElement.classList.add('dark-mode');
+       headerElement.classList.add('dark-mode');
+       footerElement.classList.add('dark-mode');
+       localStorage.setItem('darkModeEnabled', 'true');
+     }
+   });
 });
 
 
