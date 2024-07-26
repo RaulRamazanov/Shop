@@ -8,6 +8,11 @@ body {
     
   }
 
+  form{
+    display: flex;
+    flex-direction: column;
+  }
+
   .users {
     background: #f5ffff;
     border-collapse: collapse;

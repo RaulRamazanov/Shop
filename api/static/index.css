@@ -152,9 +152,8 @@
   max-width: 1415px;
   display: flex;
   align-items: center;
-  /* justify-content: space-between; */
-  /* justify-content: center; */
-  justify-content: center;
+  width: 100%;
+  justify-content: start;
 }
 
 .card {
@@ -165,6 +164,7 @@
   border: 7px solid black;
   padding: 5px;
   width: calc(100% / 5 - 10px);
+  min-width: 300px;
 }
 
 .card__img-wrapper {
