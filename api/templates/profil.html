@@ -22,9 +22,9 @@
         <button id="favoriteButton" class="btn btn--favorite">
           <i class="fa-regular fa-moon header__ico"></i>
         </button>
-        <button class="btn btn--cart">
-          <i class="fa-solid fa-cart-shopping header__ico"></i>
-        </button>
+        <a href="{% if has_token %}/cart/{% else %}/profil/{% endif %}" class="btn btn--profile">
+            <i class="fa-solid fa-cart-shopping header__ico"></i>
+          </a>
         <span class="header__price">xxxx</span>
       </div>
     </header>
@@ -60,19 +60,24 @@
         </span>
     </div>
     <div class="stat">
-        <h2 class="stat__title">Роль</h2>
-        <span class="stat__value">
-            {% if has_token %}
-                {% if user %}
-                    {{ user.role }}
-                {% else %}
-                    Не удалось получить информацию о пользователе.
+    <h2 class="stat__title">Роль</h2>
+     <span class="stat__value">
+        {% if has_token %}
+            {% if user %}
+                {{ user.role }}
+                {% if user.role == "superadmin" %}
+                    <a href="/superadmin">Перейти на страницу суперадмина</a>
+                {% elif user.role == "admin" %}
+                    <a href="/admin">Перейти на страницу админа</a>
                 {% endif %}
             {% else %}
-                Вы не вошли в систему.
+                Не удалось получить информацию о пользователе.
             {% endif %}
-        </span>
-    </div>
+        {% else %}
+            Вы не вошли в систему.
+        {% endif %}
+    </span>
+</div>
       </div>    
   <button class="exit">Выход</button>
     </main>

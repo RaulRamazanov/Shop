@@ -32,9 +32,9 @@
           <button id="favoriteButton" class="btn btn--favorite">
             <i class="fa-regular fa-moon header__ico"></i>
           </button>
-          <button class="btn btn--cart">
+          <a href="{% if has_token %}/cart/{% else %}/login/{% endif %}" class="btn btn--profile">
             <i class="fa-solid fa-cart-shopping header__ico"></i>
-          </button>
+          </a>
           <span class="header__price">xxxx</span>
         </div>
       </header>

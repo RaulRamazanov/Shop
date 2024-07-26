@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException, Request, Cookie, status, Path
+from fastapi import FastAPI, Depends, HTTPException, Request, Cookie, status, Path, Header,APIRouter
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.responses import Response, HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -8,13 +8,15 @@ from fastapi.responses import Response
 from database import SessionLocal, engine, Base
 from models import User as DBUser, Item as DBItem, FavoriteItem, CartItem
 from pydantic import BaseModel
-from validation import User, UserCreate, Token, Item, ItemCreate, validate_user_create
+from validation import User, UserCreate, Token, Item, ItemCreate, validate_user_create, UserUpdate, CartItemCreate
 from typing import Optional
 from auth import *
 import uuid
 
 # подключение библиотеки
 app = FastAPI()
+
+router = APIRouter()
 
 # Подключаем папку с шаблонами(HTML)
 templates = Jinja2Templates(directory="templates")
@@ -24,8 +26,6 @@ app.mount("/static", StaticFiles(directory="./static"), name="static")
 
 # Создание таблиц в базе данных(запуск engine)
 Base.metadata.create_all(bind=engine)
-
-# Переопределение SQLAlchemy моделей в Pydantic модели
 
 
 # Функция для получения сессии базы данных
@@ -38,7 +38,7 @@ def get_db():
 
 
 # Создание пользователя(регистрация)
-@app.post("/users/", response_model=User)
+@app.post("/users/", response_model=User, tags=['registration'])
 def create_user(response: Response, user_create: UserCreate, db: Session = Depends(get_db)):
     validated_user = validate_user_create(user_create.dict())  # Проводим валидацию данных пользователя
     if validated_user is None:
@@ -59,12 +59,76 @@ def create_user(response: Response, user_create: UserCreate, db: Session = Depen
 
 
 
+#пут запрос для суперадмина(изменение роли)
+@app.put("/users/{user_id}", response_model=UserUpdate, tags=['users'])
+def update_user(user_id: str, user_update: UserUpdate, db: Session = Depends(get_db)):
+    db_user = db.query(DBUser).filter(DBUser.id == user_id).first()
+    
+    if not db_user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    updated_data = user_update.dict(exclude_unset=True)
+    for key, value in updated_data.items():
+        setattr(db_user, key, value)
+    
+    db.commit()
+    db.refresh(db_user)
+    
+    return db_user
+
 class Token(BaseModel):
     access_token: str
     token_type: str = "bearer"
 
 
-@app.post("/login/")
+#гет запрос для суперадмина(только он может сюда перейти)
+@app.get("/superadmin", response_class=HTMLResponse, tags=['users'])
+def get_superadmin_page(request: Request, access_token: str = Cookie(None), db: Session = Depends(get_db)):
+    current_user_id = None
+    current_user_role = None
+
+    if not access_token:
+        raise HTTPException(status_code=401, detail="User is not authenticated")
+
+    current_user_id = get_user_id_from_access_token(access_token)
+
+    if not current_user_id:
+        raise HTTPException(status_code=401, detail="Invalid access token")
+
+    current_user_role = get_user_role_by_id(db, current_user_id)
+
+    if current_user_role != 'superadmin':
+        raise HTTPException(status_code=403, detail="You are not authorized to access this page")
+
+    users = db.query(DBUser).all()  # Получаем всех пользователей из базы данных
+
+    return templates.TemplateResponse("superadmin.html", {"request": request, "users": users})
+
+
+#гет запрос для админа(только он может сюда перейти)
+@app.get("/admin", response_class=HTMLResponse, tags=['users'])
+def get_superadmin_page(request: Request, access_token: str = Cookie(None), db: Session = Depends(get_db)):
+    current_user_id = None
+    current_user_role = None
+
+    if not access_token:
+        raise HTTPException(status_code=401, detail="User is not authenticated")
+
+    current_user_id = get_user_id_from_access_token(access_token)
+
+    if not current_user_id:
+        raise HTTPException(status_code=401, detail="Invalid access token")
+
+    current_user_role = get_user_role_by_id(db, current_user_id)
+
+    if current_user_role != 'admin':
+        raise HTTPException(status_code=403, detail="You are not authorized to access this page")
+
+    users = db.query(DBUser).all()  # Получаем всех пользователей из базы данных
+
+    return templates.TemplateResponse("admin.html", {"request": request, "users": users})
+
+@app.post("/login/",  tags=['registration'])
 def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     user = get_user_by_email(db, form_data.username)
     if not user or not verify_password(form_data.password, user.password):
@@ -78,7 +142,7 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
     print(access_token)
     return response
 
-@app.post("/logout/")
+@app.post("/logout/",  tags=['registration'])
 def logout(request: Request, response: Response, token: str = Cookie(None)):
     if token:
         try:
@@ -91,7 +155,7 @@ def logout(request: Request, response: Response, token: str = Cookie(None)):
     return {"message": "Successfully logged out"}
 
 
-@app.delete("/users/{user_id}/")
+@app.delete("/users/{user_id}/" , tags=['registration'])
 def delete_user(user_id: str, db: Session = Depends(get_db)):
     user = db.query(DBUser).filter(DBUser.id == user_id).first()
     if user:
@@ -105,7 +169,7 @@ def has_token(request: Request) -> bool:
     return access_token is not None
 
 
-
+#пост запрос для админа
 @app.post("/items/", response_model=Item)
 def create_item(item_create: ItemCreate, db: Session = Depends(get_db)):
     item_id = str(uuid.uuid4())
@@ -129,16 +193,14 @@ def update_item(item_id: str, item_update: ItemCreate, db: Session = Depends(get
     return db_item
 
 # Получение всех товаров
-@app.get("/items/", response_model=list[Item])
+@app.get("/items/", response_model=list[Item],  tags=['admin'])
 def read_items(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
     items = db.query(DBItem).offset(skip).limit(limit).all()
     return items
 
 
-
-
 #удаление товара 
-@app.delete("/items/{item_id}")
+@app.delete("/items/{item_id}",  tags=['client'])
 def delete_item(item_id: str, db: Session = Depends(get_db)):
     db_item = db.query(DBItem).filter(DBItem.id == item_id).first()
     if not db_item:
@@ -148,11 +210,9 @@ def delete_item(item_id: str, db: Session = Depends(get_db)):
     return {"message": "Item deleted"}
 
 
-class CartItemCreate(BaseModel):
-    item_id: str
-    quantity: int 
 
-@app.post("/add-to-cart")
+
+@app.post("/add-to-cart",  tags=['client'])
 async def add_to_cart(cart_item: CartItemCreate, request: Request, access_token: str = Cookie(None), db: Session = Depends(get_db)):
     if not access_token:
         raise HTTPException(status_code=401, detail="Требуется авторизация")  # проверка наличия токена
@@ -171,12 +231,12 @@ async def add_to_cart(cart_item: CartItemCreate, request: Request, access_token:
 
 #гет запросы для фронтента
 
-@app.get("/", response_class=HTMLResponse)
+@app.get("/", response_class=HTMLResponse, tags=['client'])
 async def index(request: Request, skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
     items = db.query(DBItem).offset(skip).limit(limit).all()
     return templates.TemplateResponse("index.html", {"request": request, "items": items,  "has_token": has_token(request)})
 
-@app.get("/cart", response_class=HTMLResponse)
+@app.get("/cart", response_class=HTMLResponse, tags=['client'])
 async def view_cart(request: Request, access_token: str = Cookie(None), db: Session = Depends(get_db)):
     if not access_token:
         raise HTTPException(status_code=401, detail="Требуется авторизация")  # проверка наличия токена
@@ -192,7 +252,7 @@ async def view_cart(request: Request, access_token: str = Cookie(None), db: Sess
     return templates.TemplateResponse("cart.html", {"request": request, "cart_items": cart_items})
 
 
-@app.delete("/cart/{item_id}")
+@app.delete("/cart/{item_id}" , tags=['client'])
 async def remove_from_cart(item_id: str, request: Request, access_token: str = Cookie(None), db: Session = Depends(get_db)):
     if not access_token:
         raise HTTPException(status_code=401, detail="Требуется авторизация")  # проверка наличия токена
@@ -212,18 +272,18 @@ async def remove_from_cart(item_id: str, request: Request, access_token: str = C
 
     return {"message": "Товар успешно удален из корзины"}
 
-@app.get("/users/", response_class=HTMLResponse)
+@app.get("/users/", response_class=HTMLResponse, tags=['front(reg)'])
 async def reg(request: Request):
     return templates.TemplateResponse("reg.html", {"request": request})
 
 
-@app.get("/login/", response_class=HTMLResponse)
+@app.get("/login/", response_class=HTMLResponse, tags=['front(reg)'])
 async def login(request: Request):
     return templates.TemplateResponse("login.html", {"request": request})
 
 
 
-@app.get("/profil/", response_class=HTMLResponse)
+@app.get("/profil/", response_class=HTMLResponse, tags=['client'])
 async def profil(request: Request, access_token: str = Cookie(None), db: Session = Depends(get_db)):
     has_token = False
     user = None

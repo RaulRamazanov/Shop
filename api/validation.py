@@ -38,6 +38,9 @@ def validate_user_create(user_data: dict):
         return None  # Возвращаем None если данные не прошли валидацию
     
 
+class UserUpdate(BaseModel):
+    role: str
+
 
 class Item(BaseModel):
     title: str
@@ -53,3 +56,7 @@ class Item(BaseModel):
 
 class ItemCreate(Item):
     pass
+
+class CartItemCreate(BaseModel):
+    item_id: str
+    quantity: int 

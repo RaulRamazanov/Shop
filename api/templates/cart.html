@@ -1,143 +1,167 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Корзина</title> 
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Корзина</title>
     <link rel="stylesheet" href="/static/cart.css" />
     <link rel="stylesheet" href="/static/reset.css" />
     <link rel="stylesheet" href="https://libs.cdnjs.net/font-awesome/6.5.1/css/all.css" />
+  </head>
+  <div id="cart-items"></div>
 
-</head>
-<div id="cart-items">
-  
-</div>
+  <body style="min-height: 100;">
+    <header class="header">
+      <a href="/"><h2 class="header__title">VR_Shop</h2></a>
+      <div class="header__search-wrap">
+        <input class="search header__search" type="text" placeholder="Поиск..." id="searchInput" />
+        <span class="header__search-wrapper"><i class="fa-solid fa-magnifying-glass header__search-ico"></i></span>
+      </div>
+      <div class="header__wrapper-btns">
+        <a href="{% if has_token %}/profil/{% else %}/login/{% endif %}" class="btn btn--profile">
+          <i class="fa-regular fa-user header__ico"></i>
+        </a>
+        <button id="favoriteButton" class="btn btn--favorite">
+          <i class="fa-regular fa-moon header__ico"></i>
+        </button>
+        <a href="{% if has_token %}/cart/{% else %}/{% endif %}" class="btn btn--profile">
+          <i class="fa-solid fa-cart-shopping header__ico"></i>
+        </a>
+      </div>
+    </header>
+    <main class="main">
+      <h1 class="main__title">Корзина</h1>
 
-<body>
-  <header class="header">
-    <a href="/"><h2 class="header__title">VR_Shop</h2></a>
-    <div class="header__search-wrap">
-      <input class="search header__search" type="text" placeholder="Поиск..." id="searchInput" />
-      <span class="header__search-wrapper"><i class="fa-solid fa-magnifying-glass header__search-ico"></i></span>
-    </div>
-    <div class="header__wrapper-btns">
-      <a href="{% if has_token %}/profil/{% else %}/login/{% endif %}" class="btn btn--profile">
-        <i class="fa-regular fa-user header__ico"></i>
-      </a>
-      <button id="favoriteButton" class="btn btn--favorite">
-        <i class="fa-regular fa-moon header__ico"></i>
-      </button>
-      <a href="{% if has_token %}/cart/{% else %}/{% endif %}" class="btn btn--profile">
-        <i class="fa-solid fa-cart-shopping header__ico"></i>
-      </a>
-       <span class="header__price"></span> 
-    </div>
-  </header>
-   <main>
-  </div>
-    <h1>Корзина</h1>
-  {% if cart_items %}
-      {% for item in cart_items %}
-      <img src="{{ item.item.image_url }}" alt="">
-          <p>{{ item.item.title }}</p>
-          <p>{{ item.item.price }}</p>
-          <p>{{ item.quantity }}</p>
-             <form id="deleteForm-{{ item.item.id }}" action="/cart/{{ item.item.id }}" method="post">
-            <input type="hidden" name="_method" value="delete">
-            <button onclick="deleteItem('{{ item.item.id }}')">Удалить из корзины</button>
-        </form>
-      {% endfor %}
-  {% else %}
-    <p>Ваша корзина пуста.</p>
-  {% endif %}
-
-   </main>
-  <footer class="footer">
-    <div class="footer__left">
-      <div class="phone-wrapper">
-        <span class="phone-wrapper__phone-number phone-number--border">+7 926 123-30-00</span>
-        <span class="phone-wrapper__phone-number">+7 926 123-30-00</span>
+      <div class="cards">
+        {% if cart_items %} {% for item in cart_items %}
+          <div class="card" style="margin: 0 9px">
+            <div class="card__img-wrapper">
+              <img class="card__img" src="{{ item.item.image_url }}" alt="" />
+            </div>
+            <div class="card__wrapper">
+              <span class="card__disc">Название:</span>
+              <span class="card__title"> {{ item.item.title }}</span>
+            </div>
+            <div class="card__wrapper"> 
+            <span class="card__disc" >Цена:</span>
+            <span class="card__price"> {{ item.item.price }}</span>
+            </div> 
+           <div class="card__wrapper"> 
+            <span class="card__disc" >Размер:</span>
+            <span class="card__price"> {{ item.item.size }}</span>
+            </div> 
+             <div class="card__wrapper"> 
+            <span class="card__disc" >Цвет:</span>
+            <span class="card__price"> {{ item.item.color }}</span>
+            </div> 
+          <form class="form" id="deleteForm-{{ item.item.id }}" action="/cart/{{ item.item.id }}" method="post">
+            <input type="hidden" name="_method" value="delete" />
+            <button class="add-to-cart-btn" onclick="deleteItem('{{ item.item.id }}')">Удалить из корзины</button>
+          </form>
+          </div>
+          {% endfor %} {% else %}
+          <p>Ваша корзина пуста.</p>
+          {% endif %}
       </div>
-      <span class="footer__adress">г. Москва, 1-я Тверская-Ямская улица, дом 21</span>
-    </div>
-    <h2 class="footer__center">VR_Shop</h2>
-    <div class="footer__right">
-      <div class="footer__contact">
-        <span class="footer__item"><i class="fa-brands fa-telegram footer__ico"></i></span>
-        <span class="footer__item"><i class="fa-brands fa-vk footer__ico"></i></span>
-        <span class="footer__item"><i class="fa-brands fa-odnoklassniki footer__ico"></i></span>
-        <span class="footer__item"><i class="fa-brands fa-youtube footer__ico"></i></span>
+    </main>
+    <footer class="footer">
+      <div class="footer__left">
+        <div class="phone-wrapper">
+          <span class="phone-wrapper__phone-number phone-number--border">+7 926 123-30-00</span>
+          <span class="phone-wrapper__phone-number">+7 926 123-30-00</span>
+        </div>
+        <span class="footer__adress">г. Москва, 1-я Тверская-Ямская улица, дом 21</span>
       </div>
-      <div class="footer__oplata">
-        <div class="footer__svg">
-          <img src="https://static.insales-cdn.com/files/1/1312/14550304/original/mir-logo_1.svg" alt="Иконка платежной системы" />
+      <h2 class="footer__center">VR_Shop</h2>
+      <div class="footer__right">
+        <div class="footer__contact">
+          <span class="footer__item"><i class="fa-brands fa-telegram footer__ico"></i></span>
+          <span class="footer__item"><i class="fa-brands fa-vk footer__ico"></i></span>
+          <span class="footer__item"><i class="fa-brands fa-odnoklassniki footer__ico"></i></span>
+          <span class="footer__item"><i class="fa-brands fa-youtube footer__ico"></i></span>
         </div>
-        <div class="footer__svg">
-          <img src="https://static.insales-cdn.com/files/1/1311/14550303/original/Group.svg" alt="" />
-        </div>
-        <div class="footer__svg">
-          <img src="https://static.insales-cdn.com/files/1/1305/14550297/original/Visa.svg" alt="Иконка платежной системы" />
+        <div class="footer__oplata">
+          <div class="footer__svg">
+            <img src="https://static.insales-cdn.com/files/1/1312/14550304/original/mir-logo_1.svg" alt="Иконка платежной системы" />
+          </div>
+          <div class="footer__svg">
+            <img src="https://static.insales-cdn.com/files/1/1311/14550303/original/Group.svg" alt="" />
+          </div>
+          <div class="footer__svg">
+            <img src="https://static.insales-cdn.com/files/1/1305/14550297/original/Visa.svg" alt="Иконка платежной системы" />
+          </div>
         </div>
       </div>
-    </div>
-  </footer>
-<script>
-  // Обработчик события при клике на кнопку "Удалить из корзины"
-  function deleteItem(itemId) {
-    if (confirm('Вы уверены, что хотите удалить этот товар из корзины?')) {
-      fetch(`/cart/${itemId}`, {
-        method: 'DELETE'
+    </footer>
+    <script>
+     // Обработчик события при клике на кнопку "Удалить из корзины"
+function deleteItem(itemId) {
+  if (confirm("Вы уверены, что хотите удалить этот товар из корзины?")) {
+    fetch(`/cart/${itemId}`, {
+      method: "DELETE",
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error("Ошибка удаления товара из корзины");
+        }
       })
-      .then(response => response.json())
-      .then(data => {
+      .then((data) => {
         console.log(data);
-
-        // Перенаправление на корневую страницу
-        window.location.href = '/cart';
-
-        window.location.href = '/';
+        // Удаление товара из DOM без перезагрузки страницы
+        const itemToRemove = document.getElementById(`item-${itemId}`);
+        if (itemToRemove) {
+          itemToRemove.remove();
+        }
+        // Перенаправление на страницу корзины
+        window.location.href = "/cart";
       })
-      .catch(error => {
-        console.error('Произошла ошибка:', error);
+      .catch((error) => {
+        console.error("Произошла ошибка:", error);
       });
-    }
+  } else {
+    // Перенаправление на страницу корзины
+    window.location.href = "/cart";
   }
+}
 
-  // Обновление значения суммы на странице корзины
-  document.addEventListener("DOMContentLoaded", () => {
-    fetch("/cart-total")
-      .then(response => response.json())
-      .then(data => {
-        const headerPrice = document.querySelector(".header__price");
-        headerPrice.innerText = data.total.toFixed(2); // Предполагается, что данные о сумме будут возвращаться в поле "total" объекта JSON
-      })
-      .catch(error => {
-        console.error('Произошла ошибка:', error);
-      });
-  });
-
-
-  
-document.addEventListener("DOMContentLoaded", function() { 
-  var favoriteButton = document.getElementById('favoriteButton'); 
-  favoriteButton.addEventListener("click", function(event) { 
-    var bodyElement = document.querySelector('body'); 
-    var headerElement = document.querySelector('header'); 
-    var footerElement = document.querySelector('footer'); 
-     
-    if (bodyElement.classList.contains('dark-mode')) { 
-      bodyElement.classList.remove('dark-mode'); 
-      headerElement.classList.remove('dark-mode'); 
-      footerElement.classList.remove('dark-mode'); 
-    } else { 
-      bodyElement.classList.add('dark-mode'); 
-      headerElement.classList.add('dark-mode'); 
-      footerElement.classList.add('dark-mode'); 
-    } 
-  }); 
+// Обновление значения суммы на странице корзины
+document.addEventListener("DOMContentLoaded", () => {
+  fetch("/cart-total")
+    .then((response) => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        throw new Error("Ошибка получения общей суммы корзины");
+      }
+    })
+    .then((data) => {
+      const headerPrice = document.querySelector(".header__price");
+      headerPrice.innerText = data.total.toFixed(2); // Предполагается, что данные о сумме будут возвращаться в поле "total" объекта JSON
+    })
+    .catch((error) => {
+      console.error("Произошла ошибка:", error);
+    });
 });
+      document.addEventListener("DOMContentLoaded", function () {
+        var favoriteButton = document.getElementById("favoriteButton");
+        favoriteButton.addEventListener("click", function (event) {
+          var bodyElement = document.querySelector("body");
+          var headerElement = document.querySelector("header");
+          var footerElement = document.querySelector("footer");
 
-</script>
-   
-</body>
+          if (bodyElement.classList.contains("dark-mode")) {
+            bodyElement.classList.remove("dark-mode");
+            headerElement.classList.remove("dark-mode");
+            footerElement.classList.remove("dark-mode");
+          } else {
+            bodyElement.classList.add("dark-mode");
+            headerElement.classList.add("dark-mode");
+            footerElement.classList.add("dark-mode");
+          }
+        });
+      });
+    </script>
+  </body>
 </html>

@@ -2,6 +2,8 @@ from passlib.context import CryptContext
 from models import User as DBUser
 from datetime import datetime, timedelta
 import jwt
+from typing import Optional
+from sqlalchemy.orm import Session
 from jwt.exceptions import ExpiredSignatureError
 from fastapi import Cookie, Request, HTTPException
 
@@ -55,3 +57,12 @@ def get_user_id_from_access_token(access_token: str) -> str:
         raise HTTPException(status_code=401, detail="Token has expired")
     except jwt.DecodeError:
         raise HTTPException(status_code=401, detail="Could not validate credentials")
+    
+
+def get_user_role_by_id(db: Session, user_id: str) -> Optional[str]:
+    db_user = db.query(DBUser).filter(DBUser.id == user_id).first()
+    
+    if db_user:
+        return db_user.role
+    
+    return None

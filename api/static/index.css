@@ -134,8 +134,9 @@
 .card {
   display: flex;
   flex-direction: column;
-  align-items: center;
   margin: 0 9px;
+  border: 7px solid black; 
+  padding: 5px;
 }
 
 .card__img-wrapper {
@@ -161,14 +162,31 @@
 }
 
 .card__title {
-  margin-top: 10px;
-  font-size: 20px;
+  margin-top: 6px;
+  font-size: 15px;
+  font-weight: bold;
+
 }
+
+.card__wrapper {
+    display: flex;
+    align-items: baseline;
+    max-width: 259px;
+  }
+
+  .card__disc {
+    margin-right: 8px;
+    min-width: 70px; /* Для выравнивания ширины элементов */
+  }
+
 
 .card__price {
   margin-top: 6px;
-  font-weight: bolder;
+  font-size: 15px;
+  font-weight: bold;
 }
+
+
 
 .footer {
   display: flex;
@@ -289,8 +307,11 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 0 9px
+    margin: 0 9px;
+    border: 7px solid black;
+    padding: 5px;
 }
+
 
 .card__img-wrapper{
     overflow: hidden;
@@ -303,12 +324,13 @@
      min-height: 310px;
 }
 }
+
+
 .add-to-cart-btn{
         background:linear-gradient(90deg,#0f9b0f,#fff);
         padding: 8px 12px;
         border-radius: 7px;
-        
-
+        margin-top: 15px;
 }
 
 .add-to-cart-btn:hover{
@@ -486,7 +508,9 @@
             box-shadow: 0 3px #0f9b0f inset}
 
     
-   
+  .dark-mode .card{
+    border: 7px solid white; 
+  }
   
 .dark-mode header * { 
 color: #ffffff}

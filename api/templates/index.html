@@ -31,7 +31,6 @@
           <a href="{% if has_token %}/cart/{% else %}/{% endif %}" class="btn btn--profile">
             <i class="fa-solid fa-cart-shopping header__ico"></i>
           </a>
-           <span class="header__price"></span> 
         </div>
       </header>
       <main class="main">
@@ -64,14 +63,28 @@
         <div class="cards" style="display: flex; width: 100%; flex-wrap: wrap">
           {% for item in items %}
   {% if item.pol == "W" %}
-    <div class="card">
-    <div class="card__img-wrapper" style="overflow: hidden">
-      <img class="card__img" src="{{ item.image_url }}" alt="" />
-    </div>
-    <p class="card__title">{{ item.title }}</p>
-    <p class="card__price">{{ item.price }}</p>
-    <button class="add-to-cart-btn" data-item-id="{{ item.id }}">Добавить в корзину</button>
-  </div>
+   <div class="card" style="margin: 0 9px">
+            <div class="card__img-wrapper">
+              <img class="card__img" src="{{ item.image_url }}" alt="" />
+            </div>
+            <div class="card__wrapper">
+              <span class="card__disc">Название:</span>
+              <span class="card__title"> {{ item.title }}</span>
+            </div>
+            <div class="card__wrapper"> 
+            <span class="card__disc" >Цена:</span>
+            <span class="card__price"> {{ item.price }}</span>
+            </div> 
+           <div class="card__wrapper"> 
+            <span class="card__disc" >Размер:</span>
+            <span class="card__price"> {{ item.size }}</span>
+            </div> 
+             <div class="card__wrapper"> 
+            <span class="card__disc" >Цвет:</span>
+            <span class="card__price"> {{ item.color }}</span>
+            </div>     
+            <button class="add-to-cart-btn" data-item-id="{{ item.id }}">Добавить в корзину</button>
+          </div>
   {% endif %}
 {% endfor %}
         </div>
@@ -83,8 +96,23 @@
             <div class="card__img-wrapper">
               <img class="card__img" src="{{ item.image_url }}" alt="" />
             </div>
-            <p class="card__title">{{ item.title }}</p>
-            <p class="card__price">{{ item.price }}</p>
+            <div class="card__wrapper">
+              <span class="card__disc">Название:</span>
+              <span class="card__title"> {{ item.title }}</span>
+            </div>
+            <div class="card__wrapper"> 
+            <span class="card__disc" >Цена:</span>
+            <span class="card__price"> {{ item.price }}</span>
+            </div> 
+           <div class="card__wrapper"> 
+            <span class="card__disc" >Размер:</span>
+            <span class="card__price"> {{ item.size }}</span>
+            </div> 
+             <div class="card__wrapper"> 
+            <span class="card__disc" >Цвет:</span>
+            <span class="card__price"> {{ item.color }}</span>
+            </div>     
+            <button class="add-to-cart-btn" data-item-id="{{ item.id }}">Добавить в корзину</button>
           </div>
           {% endif %} {% endfor %}
         </div>

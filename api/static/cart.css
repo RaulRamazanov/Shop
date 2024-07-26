@@ -129,26 +129,78 @@
   color: #ffffff }
 
   .main{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-}
-
-.card{
+    padding: 10px 15px;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    margin: 0 9px
+
 }
 
-.card__img-wrapper{
-    overflow: hidden;
+
+.main__title{
+    text-align: center;
 }
 
-.card__img{
-    object-fit: cover;
+
+.cards {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  margin: 0 9px;
+  border: 7px solid black; 
+  padding: 5px;
+}
+
+.card__img-wrapper {
+  overflow: hidden;
+}
+
+.card__img {
+  max-width: 259px;
+   max-height: 310px;
+    min-height: 310px
+}
+
+.dark-mode .card{
+    border: 7px solid white; 
+  }
+
+
+.card__wrapper {
+    display: flex;
+    align-items: baseline;
     max-width: 259px;
-     max-height: 310px; 
-     min-height: 310px;
+  }
+
+  .card__disc {
+    margin-right: 8px;
+    min-width: 70px; /* Для выравнивания ширины элементов */
+  }
+
+
+.card__price {
+  margin-top: 6px;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.add-to-cart-btn{
+        background:linear-gradient(90deg,#e20909,#fff);
+        padding: 8px 12px;
+        border-radius: 7px;
+}
+
+
+.dark-mode .add-to-cart-btn{
+    background:linear-gradient(90deg,#e20909,#000000);
+}
+
+.form{
+    margin-top: 10px;
+    text-align: center;
 }
