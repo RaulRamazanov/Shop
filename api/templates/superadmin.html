@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Update User Role</title>
+    <link rel="stylesheet" href="/static/superadmin.css?test=4w36t4" />
+    <link rel="stylesheet" href="https://libs.cdnjs.net/font-awesome/6.5.1/css/all.css" />
 </head>
+
 <body>
     <form id="update-user-form">
         <label for="user-id">User ID:</label>
@@ -13,10 +16,10 @@
         <label for="new-role">New Role:</label>
         <input type="text" id="new-role" name="new-role">
         
-        <button type="submit">Update User Role</button>
+        <button class="add_to_superadmin_btn" type="submit">Update User Role</button>
     </form>
     <h1>Users List</h1>
-    <table>
+    <table class="users">
         <tr>
             <th>ID</th>
             <th>Email</th>
@@ -30,8 +33,6 @@
         </tr>
         {% endfor %}
     </table>
-
-
     <script>
         document.getElementById("update-user-form").addEventListener("submit", function(event) {
             event.preventDefault();
