@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <link rel="stylesheet" href="/static/index.css?test4554" />
+    <link rel="stylesheet" href="/static/index.css?test4545" />
     <link rel="stylesheet" href="/static/reset.css" />
     <link rel="stylesheet" href="https://libs.cdnjs.net/font-awesome/6.5.1/css/all.css" />
     <style>
@@ -46,7 +46,7 @@
           </div>
           <div class="galery__bottom">
             <div class="galery__img-wrapper">
-              <img class="galery__img" src="static/style(1).jpg" alt="" />
+              <img class="galery__img galery__img--left" src="static/style(1).jpg" alt="" />
             </div>
             <div class="galery__img-wrapper">
               <img class="galery__img" src="static/style(2).jpg" alt="" />
@@ -55,7 +55,7 @@
               <img class="galery__img" src="static/style(3).jpg" alt="" />
             </div>
             <div class="galery__img-wrapper">
-              <img class="galery__img" src="static/style(4).jpg" alt="" />
+              <img class="galery__img galery__img--right" src="static/style(4).jpg" alt="" />
             </div>
           </div>
         </div>
@@ -91,7 +91,7 @@
         </div>
         <h2 class="chapter-title">Мужчины</h2>
         <h4 class="chapter-text">Рекомендации</h4>
-        <div class="cards" style="display: flex;  flex-wrap: wrap">
+        <div class="cards">
           {% for item in items %} {% if item.pol == "M" %}
           <div class="card">
             <div class="card__img-wrapper">

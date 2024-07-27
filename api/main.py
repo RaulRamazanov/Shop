@@ -39,7 +39,7 @@ def get_db():
 
 # Создание пользователя(регистрация)
 @app.post("/users/", response_model=User, tags=['registration'])
-def create_user(response: Response, user_create: UserCreate, db: Session = Depends(get_db)):
+async def create_user(response: Response, user_create: UserCreate, db: Session = Depends(get_db)):
     validated_user = validate_user_create(user_create.dict())  # Проводим валидацию данных пользователя
     if validated_user is None:
         response.status_code = status.HTTP_422_UNPROCESSABLE_ENTITY
@@ -61,7 +61,7 @@ def create_user(response: Response, user_create: UserCreate, db: Session = Depen
 
 #пут запрос для суперадмина(изменение роли)
 @app.put("/users/{user_id}", response_model=UserUpdate, tags=['users'])
-def update_user(user_id: str, user_update: UserUpdate, db: Session = Depends(get_db)):
+async def update_user(user_id: str, user_update: UserUpdate, db: Session = Depends(get_db)):
     db_user = db.query(DBUser).filter(DBUser.id == user_id).first()
     
     if not db_user:
@@ -83,7 +83,7 @@ class Token(BaseModel):
 
 #гет запрос для суперадмина(только он может сюда перейти)
 @app.get("/superadmin", response_class=HTMLResponse, tags=['users'])
-def get_superadmin_page(request: Request, access_token: str = Cookie(None), db: Session = Depends(get_db)):
+async def get_superadmin_page(request: Request, access_token: str = Cookie(None), db: Session = Depends(get_db)):
     current_user_id = None
     current_user_role = None
 
@@ -107,7 +107,7 @@ def get_superadmin_page(request: Request, access_token: str = Cookie(None), db: 
 
 #гет запрос для админа(только он может сюда перейти)
 @app.get("/admin", response_class=HTMLResponse, tags=['users'])
-def get_superadmin_page(request: Request, access_token: str = Cookie(None), db: Session = Depends(get_db)):
+async def get_superadmin_page(request: Request, access_token: str = Cookie(None), db: Session = Depends(get_db)):
     current_user_id = None
     current_user_role = None
 
@@ -124,12 +124,12 @@ def get_superadmin_page(request: Request, access_token: str = Cookie(None), db: 
     if current_user_role != 'admin':
         raise HTTPException(status_code=403, detail="You are not authorized to access this page")
 
-    users = db.query(DBUser).all()  # Получаем всех пользователей из базы данных
+    item = db.query(DBItem).all()  # Получаем всех пользователей из базы данных
 
-    return templates.TemplateResponse("admin.html", {"request": request, "users": users})
+    return templates.TemplateResponse("admin.html", {"request": request, "items": item})
 
 @app.post("/login/",  tags=['registration'])
-def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     user = get_user_by_email(db, form_data.username)
     if not user or not verify_password(form_data.password, user.password):
         raise HTTPException(status_code=401, detail="Неверный email или пароль")
@@ -143,7 +143,7 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
     return response
 
 @app.post("/logout/",  tags=['registration'])
-def logout(request: Request, response: Response, token: str = Cookie(None)):
+async def logout(request: Request, response: Response, token: str = Cookie(None)):
     if token:
         try:
             decoded_token = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
@@ -156,7 +156,7 @@ def logout(request: Request, response: Response, token: str = Cookie(None)):
 
 
 @app.delete("/users/{user_id}/" , tags=['registration'])
-def delete_user(user_id: str, db: Session = Depends(get_db)):
+async def delete_user(user_id: str, db: Session = Depends(get_db)):
     user = db.query(DBUser).filter(DBUser.id == user_id).first()
     if user:
         db.delete(user)
@@ -171,7 +171,7 @@ def has_token(request: Request) -> bool:
 
 #пост запрос для админа
 @app.post("/items/", response_model=Item)
-def create_item(item_create: ItemCreate, db: Session = Depends(get_db)):
+async def create_item(item_create: ItemCreate, db: Session = Depends(get_db)):
     item_id = str(uuid.uuid4())
     db_item = DBItem(id=item_id, **item_create.dict())
     db.add(db_item)
@@ -181,7 +181,7 @@ def create_item(item_create: ItemCreate, db: Session = Depends(get_db)):
 
 
 @app.put("/items/{item_id}", response_model=Item)
-def update_item(item_id: str, item_update: ItemCreate, db: Session = Depends(get_db)):
+async def update_item(item_id: str, item_update: ItemCreate, db: Session = Depends(get_db)):
     db_item = db.query(DBItem).filter(DBItem.id == item_id).first()
     if db_item is None:
         raise HTTPException(status_code=404, detail="Item not found")
@@ -194,14 +194,14 @@ def update_item(item_id: str, item_update: ItemCreate, db: Session = Depends(get
 
 # Получение всех товаров
 @app.get("/items/", response_model=list[Item],  tags=['admin'])
-def read_items(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
+async def read_items(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
     items = db.query(DBItem).offset(skip).limit(limit).all()
     return items
 
 
 #удаление товара 
 @app.delete("/items/{item_id}",  tags=['client'])
-def delete_item(item_id: str, db: Session = Depends(get_db)):
+async def delete_item(item_id: str, db: Session = Depends(get_db)):
     db_item = db.query(DBItem).filter(DBItem.id == item_id).first()
     if not db_item:
         raise HTTPException(status_code=404, detail="Item not found")
@@ -294,3 +294,21 @@ async def profil(request: Request, access_token: str = Cookie(None), db: Session
         user = db.query(DBUser).filter(DBUser.id == user_id).first()  # Получаем пользователя по айди из токена
 
     return templates.TemplateResponse("profil.html", {"request": request, "has_token": has_token, "user": user})
+
+
+# Модель данных для товара
+class Tovar(BaseModel):
+    id: str
+    title: str
+    price: int
+
+
+# Обработчик POST-запроса для сохранения товара
+@app.post("/save_item")
+async def save_item(item: Tovar):
+    # Получение данных о товаре
+    item_id = item.id
+    item_name = item.name
+    
+    
+    return {"message": f"Товар '{item_name}' успешно сохранен с ID '{item_id}'."}

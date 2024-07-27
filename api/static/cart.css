@@ -215,3 +215,33 @@ height: 100vh;
     margin-top: 10px;
     text-align: center;
 }
+
+@media (max-width: 1215px) {
+  .header__search-wrap {
+    display: none; /* или любые другие свойства, чтобы скрыть элемент */
+  }
+
+  .header {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 760px) {
+  .footer__center {
+    display: none;
+  }
+  
+  .footer {
+    flex-wrap: wrap;
+    margin-top: 10px;
+    justify-content: center;
+    padding: 10px 0 0 0;
+  }
+
+  .footer__left {
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+
+
+}

@@ -8,9 +8,14 @@ body {
     
   }
 
+  .forms-wrapper{
+    display: flex;
+  }
+
   form{
     display: flex;
     flex-direction: column;
+    margin: 0 10px;
   }
 
   .users {
@@ -69,6 +74,7 @@ body {
     background:linear-gradient(90deg,#0ab41b,#fff);
     padding: 8px 12px;
     border-radius: 7px;
+    margin-top: 10px;
 }
 
 .add_to_superadmin_btn:hover {
@@ -79,4 +85,16 @@ body {
 .add_to_superadmin_btn:active {
     background: #0f9b0f;
     box-shadow: 0 3px #0f9b0f inset;
+}
+
+
+.profil{
+  padding: 10px 15px;
+  font-size: 18px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: 600;
+  margin-top: 100px;
+  color: #000;
 }

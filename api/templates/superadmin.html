@@ -1,74 +1,103 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Update User Role</title>
-    <link rel="stylesheet" href="/static/superadmin.css?test=4w36t4" />
+    <link rel="stylesheet" href="/static/superadmin.css" />
     <link rel="stylesheet" href="https://libs.cdnjs.net/font-awesome/6.5.1/css/all.css" />
-</head>
+  </head>
 
-<body>
-    <form id="update-user-form">
+  <body>
+    <h1>Поменять роль / Удалить пользователя</h1>
+    <div class="forms-wrapper">
+      <form class="form" id="update-user-form">
         <label for="user-id">User ID:</label>
-        <input type="text" id="user-id" name="user-id">
-        
-        <label for="new-role">New Role:</label>
-        <input type="text" id="new-role" name="new-role">
-        
-        <button class="add_to_superadmin_btn" type="submit">Update User Role</button>
-    </form>
-    <h1>Users List</h1>
-    <table class="users">
-        <tr>
-            <th>ID</th>
-            <th>Email</th>
-            <th>Role</th>
-        </tr>
-        {% for user in users %}
-        <tr>
-            <td>{{ user.id }}</td>
-            <td>{{ user.email }}</td>
-            <td>{{ user.role }}</td>
-        </tr>
-        {% endfor %}
-    </table>
-    <script>
-        document.getElementById("update-user-form").addEventListener("submit", function(event) {
-            event.preventDefault();
-            
-            const userId = document.getElementById("user-id").value;
-            const newRole = document.getElementById("new-role").value;
-            
-            const accessToken = getAccessToken();  // Replace with the actual method of retrieving the access token
-            
-            fetch(`/users/${userId}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${accessToken}`
-                },
-                body: JSON.stringify({
-                    role: newRole
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log("User role updated successfully:", data);
-                // Handle success response here
-            })
-            .catch(error => {
-                console.error("Error updating user role:", error);
-                // Handle error response here
-            });
-        });
+        <input type="text" id="user-id" name="user-id" />
 
-        function getAccessToken() {
-            // Implement the logic to retrieve the actual access token
-            // from your application's authentication mechanism.
-            // For example, you might store it in a cookie or retrieve it from local storage.
-            // Make sure to return the actual access token value.
-        }
+        <label for="new-role">New Role:</label>
+        <input type="text" id="new-role" name="new-role" />
+
+        <button class="add_to_superadmin_btn" type="submit">Update User Role</button>
+      </form>
+      <form class="form">
+        <label for="userIdInput">User ID:</label>
+        <input type="text" id="userIdInput" />
+
+        <button class="add_to_superadmin_btn" style="background: linear-gradient(90deg, red, #fff); margin-top: 10px" onclick="deleteUser()">
+          Delete User
+        </button>
+      </form>
+    </div>
+
+    <h1>Пользователи</h1>
+    <table class="users">
+      <tr>
+        <th>ID</th>
+        <th>Email</th>
+        <th>Role</th>
+      </tr>
+      {% for user in users %}
+      <tr>
+        <td>{{ user.id }}</td>
+        <td>{{ user.email }}</td>
+        <td>{{ user.role }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+    <a  class="profil" href="/profil/">Перейти в профиль</a>
+    <script>
+      document.getElementById("update-user-form").addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const userId = document.getElementById("user-id").value;
+        const newRole = document.getElementById("new-role").value;
+
+        const accessToken = getAccessToken(); // Replace with the actual method of retrieving the access token
+
+        fetch(`/users/${userId}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+          body: JSON.stringify({
+            role: newRole,
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            console.log("User role updated successfully:", data);
+            // Handle success response here
+          })
+          .catch((error) => {
+            console.error("Error updating user role:", error);
+            // Handle error response here
+          });
+      });
+
+      function getAccessToken() {
+        // Implement the logic to retrieve the actual access token
+        // from your application's authentication mechanism.
+        // For example, you might store it in a cookie or retrieve it from local storage.
+        // Make sure to return the actual access token value.
+      }
+
+      function deleteUser() {
+        const userId = document.getElementById("userIdInput").value;
+
+        fetch(`/users/${userId}/`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            const resultDiv = document.getElementById("result");
+            resultDiv.innerText = data.message;
+          });
+      }
     </script>
-</body>
+  </body>
 </html>
