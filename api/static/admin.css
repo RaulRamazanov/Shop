@@ -8,10 +8,10 @@
 }
 body{
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: start;
+  justify-content: space-between;
   min-height: 100vh;
-  padding: 30px  10px;
+  padding: 30px  30px;
   font-family: 'Poppins', sans-serif;
   background: linear-gradient(115deg, rgb(171, 171, 171))
 }
