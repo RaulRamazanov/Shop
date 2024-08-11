@@ -1,1 +1,1 @@
-URL_DATABASE = 'postgresql://postgres:pass123@localhost:5432/shop'
+URL_DATABASE = 'postgresql+psycopg2://postgres:pass123@db:5432/shop'
